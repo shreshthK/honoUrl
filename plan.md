@@ -48,6 +48,39 @@ Keep `src/index.ts` small and split routes + db code:
 - `src/lib/slug.ts` (generate short codes)
 - `src/lib/validateUrl.ts` (URL validation)
 
+### Basic file-structure example (copy this mental model)
+
+```text
+honoUrl/
+  src/
+    index.ts                # app entry (create app, mount routes, export default)
+    env.ts                  # reads env vars, validates required ones
+    routes/
+      index.ts              # mounts /api and other route groups
+      health.ts             # GET /health
+      links.ts              # POST /api/links, GET /api/links/:code, etc
+      redirect.ts           # GET /:code
+    db/
+      client.ts             # creates DB client (drizzle + postgres)
+      schema.ts             # drizzle schema definitions
+      migrations/           # drizzle-kit generated migrations (or /drizzle)
+    services/
+      linkService.ts        # business logic (create link, fetch, expire checks)
+      analyticsService.ts   # record click, query events
+    lib/
+      slug.ts               # code generation (base62/random)
+      validateUrl.ts        # URL validation helpers
+      hash.ts               # ip hashing helper
+  .env
+  .env.example
+  docker-compose.yml        # optional: local postgres
+  drizzle.config.ts
+  package.json
+  tsconfig.json
+  README.md
+  plan.md
+```
+
 ## Milestones (do these manually)
 
 ### Milestone 0: Setup local Postgres (Docker)
