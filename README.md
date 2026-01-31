@@ -55,6 +55,82 @@ bun run dev
 
 Server starts on `http://localhost:3000`.
 
+## Deploy to AWS EC2 (Docker)
+
+These steps deploy the API and a Postgres container on the same EC2 instance
+and expose the API on port `3001` via your Elastic IP.
+
+### 1) SSH into EC2
+
+```sh
+ssh -i /path/to/key.pem ubuntu@<ELASTIC_IP>
+```
+
+### 2) Install Docker and Compose (if needed)
+
+```sh
+docker --version
+docker compose version
+```
+
+If missing:
+
+```sh
+sudo apt update && sudo apt install -y docker.io docker-compose-plugin
+sudo usermod -aG docker $USER
+newgrp docker
+```
+
+### 3) Clone repo into home directory
+
+```sh
+cd /home/ubuntu
+git clone https://github.com/shreshthK/honoUrl.git
+cd /home/ubuntu/honoUrl
+```
+
+### 4) Configure environment
+
+```sh
+cp .env.example .env
+nano .env
+```
+
+Set:
+
+```
+DATABASE_URL=postgresql://app:app@postgres:5432/honourl
+BASE_URL=http://<ELASTIC_IP>:3001
+```
+
+### 5) Build and run
+
+```sh
+docker compose up -d --build
+```
+
+### 6) Open inbound port in EC2 Security Group
+
+Add an inbound rule:
+
+- Type: Custom TCP
+- Port range: `3001`
+- Source: `0.0.0.0/0` (or your IP)
+
+Do not open `5432` to the public.
+
+### 7) Verify
+
+```sh
+curl http://<ELASTIC_IP>:3001/
+```
+
+Expected output:
+
+```
+Hello Hono!
+```
+
 ## API
 
 ### OpenAPI + Swagger UI
