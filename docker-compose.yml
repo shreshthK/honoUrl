@@ -1,4 +1,21 @@
 services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: honourl-api
+    environment:
+      DATABASE_URL: postgresql://app:app@postgres:5432/honourl
+      BASE_URL: http://localhost:3001
+      NODE_ENV: production
+    ports:
+      - "3001:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: ["sh", "-c", "bun run db:migrate && bun run src/index.ts"]
+    restart: unless-stopped
+
   postgres:
     image: postgres:16
     container_name: honourl-postgres
