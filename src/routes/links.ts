@@ -1,3 +1,5 @@
+//not used anymore. Codes below has been moved to openapi.ts
+
 import { Hono } from "hono";
 import { eq, and, gte, lte, desc, sql } from "drizzle-orm";
 import { db } from "../db/client";
